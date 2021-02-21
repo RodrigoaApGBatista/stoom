@@ -2,6 +2,7 @@ package com.rodrigobatista.data.vo;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.rodrigobatista.entity.Endereco;
+import lombok.Builder;
 import lombok.Data;
 import org.modelmapper.ModelMapper;
 import org.springframework.hateoas.RepresentationModel;
@@ -9,6 +10,7 @@ import org.springframework.hateoas.RepresentationModel;
 import java.io.Serializable;
 
 @Data
+@Builder
 public class EnderecoVO extends RepresentationModel<EnderecoVO> implements Serializable {
 
     @JsonProperty("Id")
@@ -44,7 +46,7 @@ public class EnderecoVO extends RepresentationModel<EnderecoVO> implements Seria
     @JsonProperty("longitude")
     private String longitude;
 
-    public static EnderecoVO create(Endereco endereco){
+    public static EnderecoVO convert(Endereco endereco){
         return new ModelMapper().map(endereco, EnderecoVO.class);
     }
 }

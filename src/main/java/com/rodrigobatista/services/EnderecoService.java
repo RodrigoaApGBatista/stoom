@@ -23,8 +23,7 @@ public class EnderecoService {
     }
 
     public EnderecoVO create(EnderecoVO enderecoVO) {
-//        EnderecoVO enderecoVoConverter = EnderecoVO.create(enderecoRepository.save(Endereco.create(enderecoVo)));
-        return EnderecoVO.create(enderecoRepository.save(Endereco.create(enderecoVO)));
+        return EnderecoVO.convert(enderecoRepository.save(Endereco.create(enderecoVO)));
     }
 
     public Page<EnderecoVO> findAll(Pageable pageable){
@@ -33,13 +32,13 @@ public class EnderecoService {
     }
 
     private EnderecoVO convertToEnderecoVo(Endereco endereco) {
-        return EnderecoVO.create(endereco);
+        return EnderecoVO.convert(endereco);
     }
 
     public EnderecoVO findById(Long id){
         var entity = enderecoRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Nenhum registro encontrato"));
-        return EnderecoVO.create(entity);
+        return EnderecoVO.convert(entity);
     }
 
     public EnderecoVO update(EnderecoVO enderecoVO){
@@ -47,7 +46,7 @@ public class EnderecoService {
         if(!endereco.isPresent()){
             new ResourceNotFoundException("Nenhum registro alterado com esse ID");
         }
-        return  EnderecoVO.create(enderecoRepository.save(Endereco.create(enderecoVO)));
+        return  EnderecoVO.convert(enderecoRepository.save(Endereco.create(enderecoVO)));
     }
 
     public void delete(Long id){
