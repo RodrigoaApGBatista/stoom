@@ -1,9 +1,11 @@
-package com.rodrigobatista.data.vo;
+package com.rodrigobatista.vo;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.rodrigobatista.entity.Endereco;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.hateoas.RepresentationModel;
 
@@ -11,6 +13,8 @@ import java.io.Serializable;
 
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class EnderecoVO extends RepresentationModel<EnderecoVO> implements Serializable {
 
     @JsonProperty("Id")

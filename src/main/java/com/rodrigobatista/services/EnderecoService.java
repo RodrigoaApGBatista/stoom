@@ -1,6 +1,6 @@
 package com.rodrigobatista.services;
 
-import com.rodrigobatista.data.vo.EnderecoVO;
+import com.rodrigobatista.vo.EnderecoVO;
 import com.rodrigobatista.entity.Endereco;
 import com.rodrigobatista.exception.ResourceNotFoundException;
 import com.rodrigobatista.repository.EnderecoRepository;
@@ -9,8 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 public class EnderecoService {
@@ -36,16 +34,14 @@ public class EnderecoService {
     }
 
     public EnderecoVO findById(Long id){
-        var entity = enderecoRepository.findById(id)
+        var endereco = enderecoRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Nenhum registro encontrato"));
-        return EnderecoVO.convert(entity);
+        return EnderecoVO.convert(endereco);
     }
 
     public EnderecoVO update(EnderecoVO enderecoVO){
-        final Optional<Endereco> endereco = enderecoRepository.findById(enderecoVO.getId());
-        if(!endereco.isPresent()){
-            new ResourceNotFoundException("Nenhum registro alterado com esse ID");
-        }
+        var endereco = enderecoRepository.findById(enderecoVO.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Nenhum registro alterado com esse ID"));
         return  EnderecoVO.convert(enderecoRepository.save(Endereco.create(enderecoVO)));
     }
 

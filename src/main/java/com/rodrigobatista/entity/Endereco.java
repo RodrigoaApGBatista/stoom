@@ -1,6 +1,6 @@
 package com.rodrigobatista.entity;
 
-import com.rodrigobatista.data.vo.EnderecoVO;
+import com.rodrigobatista.vo.EnderecoVO;
 import lombok.Data;
 import org.modelmapper.ModelMapper;
 
@@ -21,7 +21,7 @@ public class Endereco implements Serializable {
     @Column(name = "number", nullable = false)
     private String number;
 
-    @Column(name = "complement", nullable = false)
+    @Column(name = "complement", nullable = true)
     private String complement;
 
     @Column(name = "neighbourhood", nullable = false)
@@ -39,10 +39,10 @@ public class Endereco implements Serializable {
     @Column(name = "zipcode", nullable = false)
     private String zipcode;
 
-    @Column(name = "latitude")
+    @Column(name = "latitude", nullable = true)
     private String latitude;
 
-    @Column(name = "longitude")
+    @Column(name = "longitude", nullable = true)
     private String longitude;
 
     public static Endereco create(EnderecoVO enderecoVO){
