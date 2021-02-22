@@ -1,11 +1,11 @@
 package com.rodrigobatista.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rodrigobatista.controller.geocode.GeocodeObject;
 import com.rodrigobatista.controller.geocode.GeocodeResult;
-import com.rodrigobatista.data.vo.EnderecoVO;
 import com.rodrigobatista.services.EnderecoService;
+import com.rodrigobatista.vo.EnderecoVO;
+import lombok.val;
 import lombok.var;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -33,7 +33,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class EnderecoController {
 
     private final EnderecoService enderecoService;
-    private final PagedResourcesAssembler<EnderecoVO> assembler; //ajudar na boa prática do HATEOAS
+    private final PagedResourcesAssembler<EnderecoVO> assembler; //implementar HATEOAS
 
     @Autowired
     public EnderecoController(EnderecoService enderecoService, PagedResourcesAssembler<EnderecoVO> assembler) {
@@ -41,7 +41,7 @@ public class EnderecoController {
         this.assembler = assembler;
     }
 
-    @GetMapping(value = "/{id}", produces = {"application/json", "application/xml", "application/x-yaml"})
+    @GetMapping(value = "/{id}", produces = {"application/json"})
     public EnderecoVO findById(@PathVariable("id") Long id){
         EnderecoVO enderecoVO = enderecoService.findById(id);
         enderecoVO.add(linkTo(methodOn(EnderecoController.class)
@@ -49,7 +49,7 @@ public class EnderecoController {
         return enderecoVO;
     }
 
-    @GetMapping(value = "/{id}", produces = {"application/json", "application/xml", "application/x-yaml"})
+    @GetMapping(produces = {"application/json"})
     public ResponseEntity<?> findAll(@RequestParam(value = "page", defaultValue = "0") int page,
                                      @RequestParam(value = "limit", defaultValue = "12") int limit,
                                      @RequestParam(value = "direction", defaultValue = "asc") String direction){
@@ -64,13 +64,14 @@ public class EnderecoController {
         return new ResponseEntity<>(pagedModel, HttpStatus.OK);
     }
 
-    @PostMapping(produces = {"application/json", "application/xml", "application/x-yaml"},
-            consumes = {"application/json", "application/xml", "application/x-yaml"})
+    @PostMapping(produces = {"application/json"},
+            consumes = {"application/json"})
     public EnderecoVO create(@RequestBody EnderecoVO enderecoVO) throws IOException {
         EnderecoVO endereco = enderecoService.create(enderecoVO);
 
         // Verifica se Latitude e Longitude estão preenchidos conforme solicitado no desafio
-        if(endereco.getLatitude().isEmpty() && endereco.getLongitude().isEmpty()){
+        if((endereco.getLatitude() == null || endereco.getLatitude().isEmpty())
+                && (endereco.getLongitude() == null || endereco.getLongitude().isEmpty())){
             String enderecoCompleto = endereco.getStreetName()
                     + endereco.getNumber()
                     + endereco.getCity()
@@ -80,17 +81,18 @@ public class EnderecoController {
             if(enderecoEncontrado.isPresent()){
                 String latitude = enderecoEncontrado.get().getGeometry().getGeocodeLocation().getLatitude();
                 String longitude = enderecoEncontrado.get().getGeometry().getGeocodeLocation().getLongitude();
-                endereco.setLatitude(longitude);
+                endereco.setLongitude(longitude);
+                endereco.setLatitude(latitude);
             }
         }
         return endereco.add(linkTo(methodOn(EnderecoController.class)
                 .findById(enderecoVO.getId())).withSelfRel());
     }
 
-    @PutMapping(produces = {"application/json", "application/xml", "application/x-yaml"},
-            consumes = {"application/json", "application/xml", "application/x-yaml"})
+    @PutMapping(produces = {"application/json"},
+            consumes = {"application/json"})
     public EnderecoVO update(@RequestBody EnderecoVO enderecoVO){
-        EnderecoVO ëndereco = enderecoService.create(enderecoVO);
+        EnderecoVO ëndereco = enderecoService.update(enderecoVO);
         return ëndereco.add(linkTo(methodOn(EnderecoController.class)
                 .findById(enderecoVO.getId())).withSelfRel());
     }
@@ -110,7 +112,7 @@ public class EnderecoController {
                 .addHeader("x-rapidapi-host", "google-maps-geocoding.p.rapidapi.com")
                 .addHeader("x-rapidapi-key", "AIzaSyCj0cY2yEvVfYhAaTz3-P2MW-YRKmhz5Uw")
                 .build();
-        ResponseBody responseBody = (ResponseBody) client.newCall(request).execute().body();
+        val responseBody = client.newCall(request).execute().body();
         ObjectMapper objectMapper = new ObjectMapper();
         return objectMapper.readValue(responseBody.toString(), GeocodeResult.class);
     }

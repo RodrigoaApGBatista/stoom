@@ -1,4 +1,4 @@
-package com.rodrigobatista.stoom;
+package com.rodrigobatista;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

@@ -1,6 +1,6 @@
-package com.rodrigobatista.stoom;
+package com.rodrigobatista;
 
-import com.rodrigobatista.data.vo.EnderecoVO;
+import com.rodrigobatista.vo.EnderecoVO;
 import com.rodrigobatista.services.EnderecoService;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
@@ -47,8 +47,8 @@ public class EnderecoCrudTest {
 
         //delete
         enderecoService.delete(2L);
-        final EnderecoVO resultadoDelete = enderecoService.findById(1L);
-        Assertions.assertThat(resultadoPorId).isNull();
+        final EnderecoVO resultadoDelete = enderecoService.findById(2L);
+        Assertions.assertThat(resultadoDelete).isNull();
 
     }
 
